@@ -14,17 +14,17 @@ function set_cors(res) {
     return res;
 }
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
+app.use('/', express.static(__dirname + '/public'));
+// app.get('/', (req, res) => {
+//     res.send('Hello World!')
+// })
 
 app.get('/download_yt/:url', (req, res) => {
     console.log('url:', req.params.url);
     let video_url = 'https://www.youtube.com/watch?v=' + req.params.url
     // let dl_cmd = "youtube-dl -f mp4 -o 'MV/%(title)s.f%(format_id)s.%(ext)s' " + video_url
     let dl_cmd = "nohup youtube-dl -f mp4 -o 'MV/" + md5(req.params.url) + ".%(ext)s' " + video_url + ' >/dev/null 2>/dev/null &'
-    // cmd.run(dl_cmd);
-    // res.send('Hello World!' + dl_cmd)
+    // var syncData = cmd.runSync(dl_cmd);
     var syncData = cmd.run(dl_cmd);
     // console.log(syncData);
     res.json({ video_url: video_url })
@@ -74,6 +74,7 @@ app.use('/mv/:id', function (req, res) {
     var check_cmd = "ps ax | grep -v grep | grep 'rtmp://localhost/live/" + playerName + "'";
     console.log(check_cmd);
     const syncData = cmd.runSync(check_cmd);
+    // console.log(syncData);
     if (syncData.data == null) {
         var cmd_line = 'nohup ffmpeg -re -i MV/' + id + ' -c copy -f flv rtmp://localhost/live/' + playerName + ' >/dev/null 2>/dev/null &'
         cmd.run(cmd_line);
