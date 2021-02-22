@@ -1,4 +1,5 @@
 const express = require('express')
+const md5 = require('md5');
 var fs = require('fs');
 var path = require('path');
 var cmd = require('node-cmd');
@@ -17,6 +18,20 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 })
 
+app.get('/download_yt/:url', (req, res) => {
+    console.log('url:', req.params.url);
+    let video_url = 'https://www.youtube.com/watch?v=' + req.params.url
+    // let dl_cmd = "youtube-dl -f mp4 -o 'MV/%(title)s.f%(format_id)s.%(ext)s' " + video_url
+    let dl_cmd = "nohup youtube-dl -f mp4 -o 'MV/" + md5(req.params.url) + ".%(ext)s' " + video_url + ' >/dev/null 2>/dev/null &'
+    // cmd.run(dl_cmd);
+    // res.send('Hello World!' + dl_cmd)
+    var syncData = cmd.run(dl_cmd);
+    // console.log(syncData);
+    res.json({ video_url: video_url })
+    // res.send('download video_url!' + video_url)
+})
+
+
 app.use('/static', express.static(__dirname + '/public'));
 
 app.get('/all_mv', (req, res) => {
@@ -29,11 +44,15 @@ app.get('/all_mv', (req, res) => {
 
     readDir.forEach(element => {
         if (element.indexOf('.mp4')) {
-            vedio_list.push({
-                name : element ,
-                rmtp: 'rtmp://localhost/live/' + element.replace('.mp4', ''),
-                flv: 'http://192.168.0.116:8000/live/' + element.replace('.mp4', '') + '.flv'
-            });
+            console.log(element.indexOf('.part'))
+            if (element.indexOf('.part') == -1) {
+                vedio_list.push({
+                    name: element,
+                    rmtp: 'rtmp://localhost/live/' + element.replace('.mp4', ''),
+                    flv: 'http://192.168.0.116:8000/live/' + element.replace('.mp4', '') + '.flv'
+                });
+            }
+
         }
     });
 
@@ -43,7 +62,7 @@ app.get('/all_mv', (req, res) => {
 
 app.use('/mv/:id', function (req, res) {
     res = set_cors(res);
-    
+
     console.log('ID:', req.params.id);
     var id = req.params.id;
     var playerName = id.replace('.mp4', '');

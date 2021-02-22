@@ -7,3 +7,6 @@ $ pm2 list
 $ pm2 stop     <app_name|namespace|id|'all'|json_conf>
 $ pm2 restart  <app_name|namespace|id|'all'|json_conf>
 $ pm2 delete   <app_name|namespace|id|'all'|json_conf>
+
+# npm i ytdl + sudo apt install python3-pafy npm -g install ytdl
+# npm install md5

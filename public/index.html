@@ -13,30 +13,56 @@
     $(function () {
         console.log("ready!");
 
-        $.getJSON("http://192.168.0.116:3000/all_mv", function (data) {
-            console.log(data)
-            data.forEach(function (item) {
-                $('#mv_lists')
-                    .append($('<option>', {
-                            value: item.flv
-                        })
-                        .text(item.name));
-            });
-
-        });
-
+        all_mv();
         change_url();
 
 
     });
 
+    function all_mv() {
+        // clear data
+        $('#mv_lists').empty();
+        $('#mv_lists')
+            .append($('<option>', {
+                value: ""
+            })
+                .text("請選擇"));
+        $.getJSON("http://192.168.0.116:3000/all_mv", function (data) {
+            console.log(data)
+            data.forEach(function (item) {
+                $('#mv_lists')
+                    .append($('<option>', {
+                        value: item.flv
+                    })
+                        .text(item.name));
+            });
+
+        });
+
+    }
+
     function change_url() {
         console.log($("#mv_lists option:selected").text())
         $.getJSON("http://192.168.0.116:3000/mv/" + $("#mv_lists option:selected").text(), function (data) {
             console.log(data)
+
+            $('#sURL').val($("#mv_lists option:selected").val());
+            console.log('1');
+            flv_load();
+            console.log('2');
         });
-        $('#sURL').val($("#mv_lists option:selected").val());
-        flv_load();
+
+    }
+    function download_mv() {
+
+        var q = $('#dd').val();
+        $.getJSON("http://192.168.0.116:3000/download_yt/" + q, function (data) {
+            console.log(data.video_url)
+            // alert(data.data);
+            // if (data.data != null) {
+            //     all_mv();
+            // }
+        });
     }
 </script>
 
@@ -52,6 +78,16 @@
                         <select id="mv_lists" onchange="change_url();">
                             <option>請選擇</option>
                         </select>
+                    </div>
+
+                </div>
+            </div>
+            <div>
+                <div id="streamURL">
+                    <div class="url-input">
+                        <label for="sURL">download : </label>
+                        <input id="dd" type="text" value="" />
+                        <button onclick="download_mv()">download_mv</button>
                     </div>
 
                 </div>
@@ -193,14 +229,14 @@
                     ret = def;
                 }
                 return ret;
-            } catch (e) {}
+            } catch (e) { }
             return def;
         }
 
         function ls_set(key, value) {
             try {
                 localStorage.setItem('flvjs_demo.' + key, value);
-            } catch (e) {}
+            } catch (e) { }
         }
 
         function saveSettings() {
