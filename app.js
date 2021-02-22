@@ -23,7 +23,7 @@ app.get('/download_yt/:url', (req, res) => {
     console.log('url:', req.params.url);
     let video_url = 'https://www.youtube.com/watch?v=' + req.params.url
     // let dl_cmd = "youtube-dl -f mp4 -o 'MV/%(title)s.f%(format_id)s.%(ext)s' " + video_url
-    let dl_cmd = "youtube-dl -f mp4 -o 'MV/" + md5(req.params.url) + ".%(ext)s' " + video_url + ''
+    let dl_cmd = "nohup youtube-dl -f mp4 -o 'MV/" + md5(req.params.url) + ".%(ext)s' " + video_url + ' >/dev/null 2>/dev/null &'
     // var syncData = cmd.runSync(dl_cmd);
     var syncData = cmd.run(dl_cmd);
     console.log(syncData);
