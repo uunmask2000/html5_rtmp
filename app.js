@@ -27,7 +27,7 @@ function resolveAfter2Seconds(video_url, dl_cmd) {
 
 async function asyncCall(req, video_url, res) {
     console.log('calling');
-    let dl_cmd = "nohup youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' -o 'MV/" + (req.params.url) + ".%(ext)s' " + video_url + ' >/dev/null 2>/dev/null &'
+    let dl_cmd = "nohup youtube-dl -f mp4 -o 'MV/" + (req.params.url) + ".%(ext)s' " + video_url + ' >/dev/null 2>/dev/null &'
     const result = await resolveAfter2Seconds(video_url, dl_cmd);
     console.log(result);
     // expected output: "resolved"
