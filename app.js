@@ -5,6 +5,8 @@ var path = require('path');
 var cmd = require('node-cmd');
 const app = express()
 const port = 3000
+// const host = '192.168.0.116:8000';
+const host = 'c392abb4bc55.ngrok.io' ;
 
 function set_cors(res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -27,7 +29,7 @@ app.get('/download_yt/:url', (req, res) => {
     // var syncData = cmd.runSync(dl_cmd);
     var syncData = cmd.run(dl_cmd);
     console.log(syncData);
-    res.json({ video_url: video_url , syncData:syncData.data })
+    res.json({ video_url: video_url, syncData: syncData.data })
     // res.send('download video_url!' + video_url)
 })
 
@@ -48,8 +50,8 @@ app.get('/all_mv', (req, res) => {
             if (element.indexOf('.part') == -1) {
                 vedio_list.push({
                     name: element,
-                    rmtp: 'rtmp://localhost/live/' + element.replace('.mp4', ''),
-                    flv: 'http://192.168.0.116:8000/live/' + element.replace('.mp4', '') + '.flv'
+                    rmtp: 'rtmp://' + host + '/live/' + element.replace('.mp4', ''),
+                    flv: 'http://' + host + '/live/' + element.replace('.mp4', '') + '.flv'
                 });
             }
 
@@ -83,8 +85,8 @@ app.use('/mv/:id', function (req, res) {
         cmd_type = true
     }
 
-    var rmtp = 'rtmp://192.168.0.116/live/' + playerName
-    var flv = 'http://192.168.0.116:8000/live/' + playerName + '.flv'
+    var rmtp = 'rtmp://' + host + '/live/' + playerName
+    var flv = 'http://' + host + '/live/' + playerName + '.flv'
     var json = {
         cmd: cmd_type,
         rmtp: rmtp,

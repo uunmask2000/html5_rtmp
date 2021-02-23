@@ -10,6 +10,8 @@
 </head>
 
 <script>
+    var host = 'cadfdae0f038.ngrok.io';
+    // var host = '192.168.0.116:3000';
     $(function () {
         console.log("ready!");
 
@@ -27,7 +29,7 @@
                 value: ""
             })
                 .text("請選擇"));
-        $.getJSON("http://192.168.0.116:3000/all_mv", function (data) {
+        $.getJSON("http://" + host + "/all_mv", function (data) {
             console.log(data)
             data.forEach(function (item) {
                 $('#mv_lists')
@@ -43,7 +45,7 @@
 
     function change_url() {
         console.log($("#mv_lists option:selected").text())
-        $.getJSON("http://192.168.0.116:3000/mv/" + $("#mv_lists option:selected").text(), function (data) {
+        $.getJSON("http://" + host + "/mv/" + $("#mv_lists option:selected").text(), function (data) {
             console.log(data)
 
             $('#sURL').val($("#mv_lists option:selected").val());
@@ -57,7 +59,7 @@
 
         var q = $('#dd').val();
         // $.ajaxSettings.async = false;
-        $.getJSON("http://192.168.0.116:3000/download_yt/" + q, function (data) {
+        $.getJSON("http://" + host + "/download_yt/" + q, function (data) {
             console.log(data.video_url)
             // alert(data.data);
             // if (data.data != null) {
