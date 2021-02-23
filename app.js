@@ -5,8 +5,8 @@ var path = require('path');
 var cmd = require('node-cmd');
 const app = express()
 const port = 3000
-// const host = '192.168.0.116:8000';
-const host = 'c392abb4bc55.ngrok.io' ;
+const host = '192.168.0.116:8000';
+// const host = 'c392abb4bc55.ngrok.io' ;
 
 function set_cors(res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -78,7 +78,7 @@ app.use('/mv/:id', function (req, res) {
     const syncData = cmd.runSync(check_cmd);
     // console.log(syncData);
     if (syncData.data == null) {
-        var cmd_line = 'nohup ffmpeg -re -i MV/' + id + ' -c copy -f flv rtmp://localhost/live/' + playerName + ' >/dev/null 2>/dev/null &'
+        var cmd_line = 'nohup ffmpeg -threads 6 -re -i MV/' + id + ' -c copy -f flv rtmp://localhost/live/' + playerName + ' >/dev/null 2>/dev/null &'
         cmd.run(cmd_line);
         console.log(cmd_line);
     } else {
