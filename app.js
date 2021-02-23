@@ -16,20 +16,36 @@ function set_cors(res) {
     return res;
 }
 
+function resolveAfter2Seconds(video_url, dl_cmd) {
+    return new Promise(resolve => {
+        var syncData = cmd.run(dl_cmd);
+        console.log(syncData)
+        resolve({ video_url: video_url, syncData: "" });
+        // return { video_url: video_url, syncData: syncData.data }
+    });
+}
+
+async function asyncCall(req, video_url, res) {
+    console.log('calling');
+    let dl_cmd = "nohup youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' -o 'MV/" + (req.params.url) + ".%(ext)s' " + video_url + ' >/dev/null 2>/dev/null &'
+    const result = await resolveAfter2Seconds(video_url, dl_cmd);
+    console.log(result);
+    // expected output: "resolved"
+    res.json(result)
+}
+
 app.use('/', express.static(__dirname + '/public'));
 // app.get('/', (req, res) => {
 //     res.send('Hello World!')
 // })
 
 app.get('/download_yt/:url', (req, res) => {
-    console.log('url:', req.params.url);
     let video_url = 'https://www.youtube.com/watch?v=' + req.params.url
     // let dl_cmd = "youtube-dl -f mp4 -o 'MV/%(title)s.f%(format_id)s.%(ext)s' " + video_url
-    let dl_cmd = "nohup youtube-dl -f mp4 -o 'MV/" + (req.params.url) + ".%(ext)s' " + video_url + ' >/dev/null 2>/dev/null &'
-    // var syncData = cmd.runSync(dl_cmd);
-    var syncData = cmd.run(dl_cmd);
-    console.log(syncData);
-    res.json({ video_url: video_url, syncData: syncData.data })
+    // let dl_cmd = "nohup youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' -o 'MV/" + (req.params.url) + ".%(ext)s' " + video_url + ' >/dev/null 2>/dev/null &'
+    // var syncData = cmd.run(dl_cmd);
+    // res.json({ video_url: video_url, syncData: syncData.data })
+    asyncCall(req, video_url, res);
     // res.send('download video_url!' + video_url)
 })
 
